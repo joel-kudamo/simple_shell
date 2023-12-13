@@ -34,6 +34,19 @@ int main(int argc __attribute__((unused)), char *argv[15])
 			free(buffer);
 			exit(0);
 		}
+		i = 0;
+		while (buffer[i])
+		{
+			if (buffer[i] == '\n')
+				buffer[i] = 0;
+			i++;
+		}
+		j = 0;
+		argv[j] = strok(buffer, delimeter);
+		while (argv[j])
+		{
+			argv[++j] = strok(NULL, delimeter);
+		}
 	}
 	free(buffer);
 	return (0);
