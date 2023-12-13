@@ -22,7 +22,7 @@ int main(int argc __attribute__((unused)), char *argv[15])
 
 	while (1 && getline_rv != EOF)
 	{
-		return_status = isatty(STDIN_FILENO);
+		(return_status) = isatty(STDIN_FILENO);
 		if (return_status) /* check if in interactive mode */
 			print_str(prompt); /* print prompt */
 
@@ -30,10 +30,11 @@ int main(int argc __attribute__((unused)), char *argv[15])
 
 		if (getline_rv == EOF) /* exit shell if the value returned is -1 */
 		{
-			print_str("Shell Exited...\n");
+			print_str("\n");
 			free(buffer);
 			exit(0);
 		}
+
 		i = 0;
 		while (buffer[i])
 		{
@@ -41,12 +42,29 @@ int main(int argc __attribute__((unused)), char *argv[15])
 				buffer[i] = 0;
 			i++;
 		}
+
 		j = 0;
-		argv[j] = strok(buffer, delimeter);
+		argv[j] = strtok(buffer, delimiter);
 		while (argv[j])
 		{
-			argv[++j] = strok(NULL, delimeter);
+			argv[++j] = strtok(NULL, delimiter);
 		}
+
+		child_PID = fork();
+		if (child_PID < 0)
+		{
+			print_str("Forking Process Failed");
+			free(buffer);
+			exit(0);
+		}
+		else if (child_PID == 0)
+		{
+			execute = execve(argv[0], argv, envp);
+			if (execute == -1)
+				print_str("Command not found\n");
+		}
+		else
+			wait(&status);
 	}
 	free(buffer);
 	return (0);
