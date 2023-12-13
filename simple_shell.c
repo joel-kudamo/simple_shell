@@ -7,7 +7,8 @@
  * Return: Always 0 (Success)
  */
 
-int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
+int main(int argc __attribute__((unused))
+, char *argv[] __attribute__((unused)))
 {
 	/* declare variables and pointers needed */
 	char *prompt = "J&H(SHELL)-$ ";
