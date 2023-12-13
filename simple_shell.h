@@ -19,6 +19,16 @@
 /* << Custom Function Prototypes >> */
 int _putchar(char c);
 int print_str(char *str);
+int _strlen(char *s);
+int _strncmp(const char *s1, const char *s2, size_t n);
+int _strcmp(char *s1, char *s2);
+char *_strncpy(char *dest, char *src, int n);
+char *_strcpy(char *dest, char *src);
+char *_strncat(char *dest, char *src, int n);
+char *_strcat(char *dest, char *src);
+char *_strdup(const char *str);
 
+/* == string to integer operations == */
+int _atoi(char *);
 
 #endif
