@@ -15,7 +15,7 @@ int main(int argc __attribute__((unused)), char *argv[15])
 	size_t bufferSize = 0;
 	ssize_t getline_rv = 0;
 	pid_t child_PID;
-	char **envp;
+	char **envp = NULL;
 	int return_status, status;
 	int execute, i, j;
 	char *delimiter = " \n";
