@@ -1,71 +1,45 @@
 #include "simple_shell.h"
-
 /**
- * main - parses input from the standard input and executes commands
- * @argc: argument count
- * @argv: argument vector
- * Return: Always 0 (Success)
+ * main - program stats.
+ *
+ * Return: Program Status(exitStatus).
  */
 
-int main(int argc __attribute__((unused)), char *argv[15])
+int main(void)
 {
-	/* declare variables and pointers needed */
-	char *prompt = ("J&H(SHELL)-$ ");
-	char *buffer = NULL;
-	size_t bufferSize = 0;
-	ssize_t getline_rv = 0;
-	pid_t child_PID;
-	char **envp = NULL;
-	int return_status, status;
-	int execute, i, j;
-	char *delimiter = " \n";
+	char *prompt;
+	char *line = NULL, **token_arr;
+	int int_mode = isatty(STDIN_FILENO);
+	int exitStatus = 0;
+	size_t size = 0;
+	ssize_t nchars_read;
 
-	while (1 && getline_rv != EOF)
+	while (1)
 	{
-		(return_status) = isatty(STDIN_FILENO);
-		if (return_status) /* check if in interactive mode */
-			print_str(prompt); /* print prompt */
-
-		getline_rv = getline(&buffer, &bufferSize, stdin); /* get input from stdin */
-
-		if (getline_rv == EOF) /* exit shell if the value returned is -1 */
+		prompt = "J&D-SHELL:~$ ";
+		if (int_mode == 1)
+			print_str(prompt);
+		nchars_read = getline(&line, &size, stdin);
+		if (nchars_read == -1)
 		{
-			print_str("\n");
-			free(buffer);
-			exit(0);
+			if (int_mode == 1)
+				_putchar('\n');
+			break;
 		}
+		/*Remove the trailing newline character */
+		if (line[nchars_read - 1] == '\n')
+			line[nchars_read - 1] = '\0';
 
-		i = 0;
-		while (buffer[i])
+		token_arr = string_token(line, " \t");
+		if (token_arr[0] == NULL)
 		{
-			if (buffer[i] == '\n')
-				buffer[i] = 0;
-			i++;
+			free(token_arr);
+			continue;
 		}
-
-		j = 0;
-		argv[j] = strtok(buffer, delimiter);
-		while (argv[j])
-		{
-			argv[++j] = strtok(NULL, delimiter);
-		}
-
-		child_PID = fork();
-		if (child_PID < 0)
-		{
-			print_str("Forking Process Failed");
-			free(buffer);
-			exit(0);
-		}
-		else if (child_PID == 0)
-		{
-			execute = execve(argv[0], argv, envp);
-			if (execute == -1)
-				print_str("Command not found\n");
-		}
-		else
-			wait(&status);
+		exitStatus = builtin(token_arr, line, exitStatus);
+		if (exitStatus == 1)
+			exitStatus = validate(token_arr, line);
 	}
-	free(buffer);
-	return (0);
+	free(line);
+	return (exitStatus);
 }
